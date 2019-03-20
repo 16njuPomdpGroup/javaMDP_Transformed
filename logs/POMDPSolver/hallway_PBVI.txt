@@ -1,0 +1,15 @@
+Started loading model Models/hallway.POMDP
+|S| = 61 |A| = 5 |O| = 21
+.Done loading model
+
+Init value function to min
+Min R value = 0.0 init value = 0.0
+Begin blind policy computation  5 actions
+Done action 0 after 1 iterations |V| = 1
+Done action 1 after 2 iterations |V| = 1
+Done action 2 after 1 iterations |V| = 1
+Done action 3 after 1 iterations |V| = 1
+Done action 4 after 1 iterations |V| = 1
+Done blind policy
+0.017865
+POMDP:computeAverageDiscountedReward:After 500 tests. ADR 0.283, stdev 0.31185

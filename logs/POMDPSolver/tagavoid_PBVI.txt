@@ -1,0 +1,15 @@
+Started loading model Models/tagAvoid.POMDP
+|S| = 870 |A| = 5 |O| = 30
+............Done loading model
+
+Init value function to min
+Min R value = -1.0 init value = -19.999999999999982
+Begin blind policy computation  5 actions
+Done action 0 after 1 iterations |V| = 1
+Done action 1 after 1 iterations |V| = 1
+Done action 2 after 1 iterations |V| = 1
+Done action 3 after 1 iterations |V| = 1
+........Done action 4 after 89 iterations |V| = 2
+Done blind policy
+0.00118906
+POMDP:computeAverageDiscountedReward:After 500 tests. ADR -11.416, stdev 4.08472
