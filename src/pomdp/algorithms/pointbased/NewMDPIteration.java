@@ -27,10 +27,10 @@ public class NewMDPIteration extends ValueIteration {
 	protected int m_cStates;
 	protected int m_cActions;
 
-	public static final double GAMA = 0.95; // 折扣因子
+	public static final double GAMA = 0.1; // 折扣因子
 	public static final double EPSILON = 0.5; // 闭包半径
-	public static final int MAX_SIZE = 80; // 最大闭包个数
-	public static final int MAX_LEVEL = 10; // 探索点的最深层数
+	public static final int MAX_SIZE = 8000; // 最大闭包个数
+	public static final int MAX_LEVEL = 200; // 探索点的最深层数
 
 	/**
 	 * 两个构造函数
@@ -154,19 +154,42 @@ public class NewMDPIteration extends ValueIteration {
 			maxAction[i] = 0;
 		}
 
-		// 验证delta(s')是否为1
-		// for (int i = 0; i < cStates; i++) {
-		// for (int j = 0; j < cActions; j++) {
-		// double sum = 0.0;
-		// for (int k = 0; k < cStates; k++) {
-		// if (i == k)
-		// continue;
-		// sum += m_fTransition.valueAt(i, j, k);
-		// if (sum > 0.0)
-		// System.out.println("sum = " + sum);
-		// }
-		// }
-		// }
+		//		 验证delta(s')是否为1
+		for (int i = 0; i < cStates; i++) {
+			for (int j = 0; j < cActions; j++) {
+				double sum = 0.0;
+				for (int k = 0; k < cStates; k++) {
+					if (i == k) continue;
+					sum += m_fTransition.valueAt(i, j, k);
+				}
+				for (int k = 0; k < cStates; k++) {
+					if (i == k) continue;
+					m_fTransition.setValue(i, j, k, m_fTransition.valueAt(i, j, k) / sum);
+				}
+			}
+		}
+
+//		 验证delta(s')是否为1
+		 for (int i = 0; i < cStates; i++) {
+			 for (int j = 0; j < cActions; j++) {
+				 double sum = 0.0;
+				 for (int k = 0; k < cStates; k++) {
+					 if (i == k) continue;
+					 sum += m_fTransition.valueAt(i, j, k);
+				 }
+				 if (sum >= 1.0) System.out.format("T()sum = " + sum);
+			 }
+		 }
+
+		double t_maxReward = 0;
+		for (int i = 0; i < cStates; i++) {
+			for (int j = 0; j < cActions; j++) {
+				if (m_fReward.valueAt(i, j) > t_maxReward) {
+					t_maxReward = m_fReward.valueAt(i, j);
+				}
+			}
+		}
+		System.out.println("Max reward in R(s,a): " + t_maxReward);
 
 		do {
 			for (int i = 0; i < cStates; i++) {
@@ -185,6 +208,9 @@ public class NewMDPIteration extends ValueIteration {
 						// if(m_fTransition.valueAt(i, j, k) > 0.0) System.out.println("Transition = " +
 						// m_fTransition.valueAt(i, j, k));
 					}
+//					if (i == 0) {
+//						System.out.println("s=0, a=" + j + " transitionReward: " + transitionReward);
+//					}
 					transitionReward = transitionReward * gama;
 					transitionReward = transitionReward + m_fReward.valueAt(i, j);
 					// if(m_fReward.valueAt(i, j) > 0.0) System.out.println("Reward = " +
@@ -199,13 +225,22 @@ public class NewMDPIteration extends ValueIteration {
 				// 赋值给delta
 				delta = Math.max(delta, Math.abs(utilityTemp[i] - utility[i]));
 
-				System.out.println("delta = " + delta);
+//				double utilityDiff = utilityTemp[i] - utility[i];
+//				System.out.println("utility[" + i + "] = " + utilityDiff + " ");
+
+//				System.out.println("delta = " + delta);
 			}
-		} while (delta >= epsilon * (1 - gama) * gama);
-		for (int i = 0; i < cStates; i++) {
-			System.out.print("utility[" + i + "] = " + utility[i] + " ");
-		}
-		System.out.println();
+
+			System.out.println("delta = " + delta);
+			double t = epsilon * (1 - gama) / gama;
+			boolean tb = delta >= t;
+			System.out.println(tb);
+//		} while (true);
+		} while (delta >= epsilon * (1 - gama) / gama);
+//		for (int i = 0; i < cStates; i++) {
+//			System.out.print("utility[" + i + "] = " + utility[i] + " ");
+//		}
+//		System.out.println();
 	}
 
 	/**
